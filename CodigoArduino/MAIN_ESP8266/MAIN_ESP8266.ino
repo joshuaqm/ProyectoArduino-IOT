@@ -32,6 +32,7 @@ int switch1 = 7;
 int switch2 = 8;
 int switch3 = 9;
 */
+//Sensor de temperatura se encuentra en el pin A0
 int sensorTemp;
 float suma;
 float valorTemp = 0;
@@ -53,10 +54,14 @@ int ledPin = 10;
 //////////////////////////////////////////////
 const char SSID_ESP[] = "MiFibra-4132";         //Give EXACT name of your WIFI
 const char SSID_KEY[] = "vzP5anY5";             //Add the password of that WIFI connection
-const char* host = "noobix.000webhostapp.com";  //Add the host without "www" Example: electronoobs.com
-String NOOBIX_id = "99999";                     //This is the ID you have on your database, I've used 99999 becuase there is a maximum of 5 characters
-String NOOBIX_password = "12345";               //Add the password from the database, also maximum 5 characters and only numerical values
+const char* host = "proyecto-coms-oj.000webhostapp.com";  //Add the host without "www" Example: electronoobs.com
+//String NOOBIX_id = "99999";                     //This is the ID you have on your database, I've used 99999 becuase there is a maximum of 5 characters
+String NOOBIX_id = "id22185005_joshuaqmx";
+//String NOOBIX_password = "12345";               //Add the password from the database, also maximum 5 characters and only numerical values
+String NOOBIX_password = "#Proteco123";
 String location_url = "/TX.php?id=";            //location of your PHP file on the server. In this case the TX.php is directly on the first folder of the server
+//Ubicacion alternativa
+//String location_url = "/public_html/TX.php?id=";
                                                 //If you have the files in a different folder, add thas as well, Example: "/ESP/TX.php?id="     Where the folder is ESP 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -167,10 +172,12 @@ SoftwareSerial ESP8266(ESP8266_RX, ESP8266_TX);// rx tx
 
 
 void setup(){//        SETUP     START
-
+  //Esto no se utiliza por que no usamos lcd
   //lcd.init();                 //Init the LCD
   //lcd.backlight();            //Activate backlight   
   
+  //Comento las variables definidas para su proyecto temporalmente y las cambio por las nuestras
+  /*
   //Pin Modes for ESP TX/RX
   pinMode(ESP8266_RX, INPUT);
   pinMode(ESP8266_TX, OUTPUT);
@@ -197,6 +204,14 @@ void setup(){//        SETUP     START
   digitalWrite(LED4,LOW);
   digitalWrite(LED5,LOW);
   
+  */
+  //Estas son las entradas en el Arduino
+  pinMode(sensorTemp, INPUT);
+  pinMode(sensorLuz, INPUT);
+  
+  //Estas son las salidas del arduino
+  pinMode(motorPin, OUTPUT);
+  pinMode(ledPin, OUTPUT);
 
   
   ESP8266.begin(9600);//default baudrate for ESP
@@ -212,7 +227,9 @@ void setup(){//        SETUP     START
 
 
 void loop(){
-
+  //Comento sus funciones de enviar datos a la base, sustituyo por las nuestras
+  //porque marca errores de compilacion debido a que quitamos sus variables anteriormente
+  /*
   sent_nr_1 = analogRead(Potentiometer_1);
   sent_nr_1 = analogRead(Potentiometer_2);
   sent_nr_1 = analogRead(Potentiometer_3);
@@ -235,8 +252,8 @@ void loop(){
   lcd.setCursor(0,1);
   lcd.print("N3: "); lcd.print(received_nr_3); lcd.print("  N4: "); lcd.print(received_nr_4);    
   delay(1000);//5 seconds between tries  
-
-
+*/
+  //Esto ya estaba comentado
   /*
   send_to_server_2();
   digitalWrite(LED1,received_bool_1);
@@ -279,7 +296,8 @@ void loop(){
   delay(1000);
   */
 
-  
+  //Vuelvo a comentar esta seccion tambien
+  /*
   send_to_server_5();
   digitalWrite(LED1,received_bool_1);
   digitalWrite(LED2,received_bool_2); 
@@ -292,7 +310,47 @@ void loop(){
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print(received_text);
+  */
   
+  //Sensor LM35
+  //valorTemp = (5000*analogRead(sensorTemp))/(1023*10);
+  //valorTemp = 500*analogRead(sensorTemp)/1023;
+  //valorTemp = ((sensorTemp*5000)/1023)/10;
+  //Sensor TMP36
+  //valorTemp = (5*analogRead(sensorTemp)/10.23)-50;
+  suma = 0;
+  for(int i=0; i<5; i++){
+    sensorTemp = analogRead(A0);
+    valorTemp = ((sensorTemp*5000.0)/1023)/10;
+    suma = valorTemp + suma;
+  }
+  Serial.print("Temperatura en C: ");
+  Serial.println(valorTemp/2.0);
+  
+  //Activacion del venilador en caso de que se pase el umbral de
+  //temperatura especificado
+  if((valorTemp/2.0) > 25){
+    digitalWrite(motorPin,HIGH);
+  }
+  else{
+  	digitalWrite(motorPin,LOW);
+  }
+     
+     
+   //Sensor de luz (fotoresistor)
+  valorLuz = analogRead(sensorLuz);
+  Serial.println("Valor del fotoresistor:");
+  Serial.println(valorLuz);
+  
+  //Activador del LED que indica que hay demasiada LUZ una vez
+  //que pase el umbral de luminosidad especificado
+  if(valorLuz > 950){
+    digitalWrite(ledPin,HIGH);
+  }
+  else{
+  	digitalWrite(ledPin,LOW);
+  }
+
   delay(1000);
 
 }//End of the main loop
