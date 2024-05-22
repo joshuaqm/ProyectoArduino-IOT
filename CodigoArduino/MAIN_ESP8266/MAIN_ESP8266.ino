@@ -33,7 +33,7 @@ int switch2 = 8;
 int switch3 = 9;
 */
 //Sensor de temperatura se encuentra en el pin A0
-int sensorTemp;
+int sensorTemp = A0;
 float suma;
 float valorTemp = 0;
 
@@ -75,9 +75,8 @@ String url = "";
 String URL_withPacket = "";    
 unsigned long multiplier[] = {1,10,100,1000,10000,100000,1000000,10000000,100000000,1000000000};
 //MODES for the ESP
-const char CWMODE = '1';//CWMODE 1=STATION, 2=APMODE, 3=BOTH
-const char CIPMUX = '1';//CWMODE 0=Single Connection, 1=Multiple Connections
-
+const char CWMODE = '1';//CWMODE 1=STATION, 2=APMODE, 3=BOTHconst char CIPMUX = '1';//CWMODE 0=Single Connection, 1=Multiple Connections
+const char CIPMUX = '1';
 
 //Define the used functions later in the code, thanks to Kevin Darrah, YT channel:  https://www.youtube.com/user/kdarrah1234
 boolean setup_ESP();
@@ -100,20 +99,22 @@ char ip_address[16];
 bool sent_bool_1 = 0;
 bool sent_bool_2 = 0;
 bool sent_bool_3 = 0;
-int  sent_nr_1 = 0;
-int  sent_nr_2 = 0;
+float  sent_nr_1 = 0; //Temperatura
+float  sent_nr_2 = 0; //Luz
 int  sent_nr_3 = 0;
 int  sent_nr_4 = 0;
 int  sent_nr_5 = 0;
 
+//Como no vamos a recibir variables desde la BD
+//Comentamos todas las siguientes variables
 //Variable RECEIVED from the DATABASE
 bool received_bool_1 = 0;
 bool received_bool_2 = 0;
 bool received_bool_3 = 0;
 bool received_bool_4 = 0;
 bool received_bool_5 = 0;
-int  received_nr_1 = 0;
-int  received_nr_2 = 0;
+float  received_nr_1 = 0;
+float  received_nr_2 = 0;
 int  received_nr_3 = 0;
 int  received_nr_4 = 0;
 int  received_nr_5 = 0;
@@ -176,6 +177,10 @@ void setup(){//        SETUP     START
   //lcd.init();                 //Init the LCD
   //lcd.backlight();            //Activate backlight   
   
+  //Estas variables se ven importantes, las ponemos aqui temporalmente
+  pinMode(ESP8266_RX, INPUT);
+  pinMode(ESP8266_TX, OUTPUT);
+
   //Comento las variables definidas para su proyecto temporalmente y las cambio por las nuestras
   /*
   //Pin Modes for ESP TX/RX
@@ -234,12 +239,15 @@ void loop(){
   sent_nr_1 = analogRead(Potentiometer_2);
   sent_nr_1 = analogRead(Potentiometer_3);
   sent_nr_1 = analogRead(Potentiometer_4);
-  
+  */
+  /*
   sent_bool_1 = digitalRead(switch1);
   sent_bool_2 = digitalRead(switch2);
   sent_bool_3 = digitalRead(switch3);
   
   send_to_server_1(); 
+  */
+  /*
   digitalWrite(LED1,received_bool_1);
   digitalWrite(LED2,received_bool_2); 
   digitalWrite(LED3,received_bool_3); 
@@ -327,6 +335,11 @@ void loop(){
   Serial.print("Temperatura en C: ");
   Serial.println(valorTemp/2.0);
   
+  //Despues de leer la temperatura y mostrarla en el monitor serial, 
+  //asignamos el valor a una variable para enviarla al server
+  sent_nr_1 = valorTemp/2.0;
+
+  
   //Activacion del venilador en caso de que se pase el umbral de
   //temperatura especificado
   if((valorTemp/2.0) > 25){
@@ -341,6 +354,9 @@ void loop(){
   valorLuz = analogRead(sensorLuz);
   Serial.println("Valor del fotoresistor:");
   Serial.println(valorLuz);
+
+  sent_nr_2 = analogRead(sensorLuz);
+
   
   //Activador del LED que indica que hay demasiada LUZ una vez
   //que pase el umbral de luminosidad especificado
@@ -350,6 +366,8 @@ void loop(){
   else{
   	digitalWrite(ledPin,LOW);
   }
+
+  send_to_server_1();
 
   delay(1000);
 

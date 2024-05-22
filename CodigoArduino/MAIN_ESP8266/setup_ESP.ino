@@ -21,7 +21,7 @@ boolean setup_ESP(){//returns a '1' if successful
    ESP8266.print("\r\n");
   if(read_until_ESP(keyword_OK,sizeof(keyword_OK),5000,0))//go look for keyword "OK"
     Serial.println("ESP CWMODE SET");
-  else
+    else
     Serial.println("ESP CWMODE SET FAILED"); //probably going to fail, since a 'no change' is returned if already set - would be nice to check for two words
   serial_dump_ESP();  
    
