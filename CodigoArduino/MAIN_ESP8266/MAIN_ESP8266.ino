@@ -13,8 +13,8 @@
 
 
 //Define the used
-#define ESP8266_RX 10  //Connect the TX pin from the ESP to this RX pin of the Arduino
-#define ESP8266_TX 11  //Connect the TX pin from the Arduino to the RX pin of ESP
+#define ESP8266_RX 2  //Connect the TX pin from the ESP to this RX pin of the Arduino
+#define ESP8266_TX 3  //Connect the TX pin from the Arduino to the RX pin of ESP
 
 //Comento las variables definidas para su proyecto temporalmente y las cambio por las nuestras
 
@@ -355,8 +355,7 @@ void loop(){
   Serial.println("Valor del fotoresistor:");
   Serial.println(valorLuz);
 
-  sent_nr_2 = analogRead(sensorLuz);
-
+  sent_nr_2 = valorLuz;
   
   //Activador del LED que indica que hay demasiada LUZ una vez
   //que pase el umbral de luminosidad especificado
@@ -369,6 +368,6 @@ void loop(){
 
   send_to_server_1();
 
-  delay(1000);
+  delay(15000);
 
 }//End of the main loop
