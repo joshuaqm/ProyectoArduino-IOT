@@ -38,22 +38,22 @@ float suma;
 float valorTemp = 0;
 
 //Activador del ventilador en base a temperatura
-int motorPin = 9;
+int motorPin = 8;
 
 //Variables para el sensor de luz
 int sensorLuz = A1;
 int valorLuz = 0;
 
 //Activador del LED en base a la luminosidad
-int ledPin = 10;
+int ledPin = 9;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////Variables you must change according to your values/////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Add your data: SSID + KEY + host + location + id + password
 //////////////////////////////////////////////
-const char SSID_ESP[] = "MiFibra-4132";         //Give EXACT name of your WIFI
-const char SSID_KEY[] = "vzP5anY5";             //Add the password of that WIFI connection
+const char SSID_ESP[] = "HOME-E98A";         //Give EXACT name of your WIFI
+const char SSID_KEY[] = "355FA410723C0290";             //Add the password of that WIFI connection
 const char* host = "proyecto-coms-oj.000webhostapp.com";  //Add the host without "www" Example: electronoobs.com
 //String NOOBIX_id = "99999";                     //This is the ID you have on your database, I've used 99999 becuase there is a maximum of 5 characters
 String NOOBIX_id = "id22185005_joshuaqmx";
